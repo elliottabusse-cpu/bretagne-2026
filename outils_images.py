@@ -31,7 +31,7 @@ MANIF  = RACINE / "photos.json"
 NIVEAUX = [
     ("w600",   600, 76, False),
     ("w1200", 1200, 76, True),
-    ("w2000", 2000, 76, False),
+    ("w1600", 1600, 74, False),
     ("w3200", 3200, 84, False),
 ]
 

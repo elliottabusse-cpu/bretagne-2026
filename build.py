@@ -39,10 +39,11 @@ def r(p): return p["l"] / p["h"]
 #  Images : un jeu de largeurs, le navigateur choisit
 # =========================================================================
 
-# Les pages s'arrêtent à 2000 px : au-delà le gain visuel est nul alors que le
-# poids double. Le 3200 px reste réservé à la visionneuse (voir script.js).
+# Les pages s'arrêtent à 1600 px. Sur la plus grande mise en page (≈1270 px
+# affichés) cela laisse encore 1,26 fois la densité d'un écran retina, pour un
+# tiers de poids en moins. Le 3200 px reste réservé à la visionneuse.
 SRCSET = ("photos/w600/{i}.webp 600w, photos/w1200/{i}.webp 1200w, "
-          "photos/w2000/{i}.webp 2000w")
+          "photos/w1600/{i}.webp 1600w")
 
 
 def image(p, tailles, prioritaire=False):

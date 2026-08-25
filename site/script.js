@@ -37,14 +37,45 @@
 
   var aReveler = $$(".cadre, .reveler, .som__item, .entree, .bloc__rail");
 
+  /* Le chargement paresseux natif démarre trop tard : le volet de révélation
+     se levait sur un cadre encore vide. On bascule les photos en chargement
+     immédiat bien avant qu'elles n'entrent à l'écran. */
+  if ("IntersectionObserver" in window) {
+    var enAvance = new IntersectionObserver(function (lot) {
+      lot.forEach(function (x) {
+        if (!x.isIntersecting) return;
+        x.target.loading = "eager";
+        enAvance.unobserve(x.target);
+      });
+    }, { rootMargin: "2200px 0px" });
+    $$('img[loading="lazy"]').forEach(function (i) { enAvance.observe(i); });
+  }
+
+  function reveler(el, retard) {
+    el.style.transitionDelay = retard + "ms";
+    el.classList.add("vu");
+  }
+
   if ("IntersectionObserver" in window) {
     var oeil = new IntersectionObserver(function (lot) {
       var n = 0;
       lot.forEach(function (x) {
         if (!x.isIntersecting) return;
-        x.target.style.transitionDelay = Math.min(n++, 6) * 70 + "ms";
-        x.target.classList.add("vu");
-        oeil.unobserve(x.target);
+        var el = x.target, retard = Math.min(n++, 6) * 70;
+        oeil.unobserve(el);
+
+        /* On n'anime qu'une fois la photo décodée. Sinon le volet se lève sur
+           un aplat de couleur et l'animation passe pour rien. */
+        var img = el.classList.contains("cadre") ? $("img", el) : null;
+        if (img && !img.complete) {
+          var fait = false;
+          var lancer = function () { if (!fait) { fait = true; reveler(el, retard); } };
+          img.addEventListener("load", lancer, { once: true });
+          img.addEventListener("error", lancer, { once: true });
+          setTimeout(lancer, 3000);          // filet : on révèle malgré tout
+        } else {
+          reveler(el, retard);
+        }
       });
     }, { rootMargin: "0px 0px -5% 0px", threshold: 0 });
     aReveler.forEach(function (n) { oeil.observe(n); });
@@ -189,7 +220,7 @@
   var bSuiv   = $("#visio-suiv");
   var bFerme  = $("#visio-fermer");
 
-  var PALIERS = [600, 1200, 2000, 3200];
+  var PALIERS = [600, 1200, 1600, 3200];   // la visionneuse garde le 3200 px
 
   /* la largeur la plus juste pour cet écran : ni floue, ni inutilement lourde */
   function palierEcran() {
