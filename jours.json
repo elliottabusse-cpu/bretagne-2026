@@ -1,13 +1,11 @@
 {
-  "_lisezmoi": "Tous les textes, couvertures et sélections du site se règlent ICI. Ensuite : python3 build.py --pages",
-
+  "_lisezmoi": "Tous les textes du site sont ici : titres, legendes (par photo), recit (interludes intercales dans le flux). Puis : python3 build.py",
   "album": {
     "titre": "Une semaine en Bretagne",
     "sousTitre": "Côte de Granit Rose · août 2026",
     "intro": "Six journées de marche, de marées et de granit rose, du 14 au 20 août. Quatre-vingt-dix photos, dans l'ordre où elles ont été prises.",
     "couverture": "IMG_4594"
   },
-
   "jours": {
     "2026-08-14": {
       "court": "14 août",
@@ -15,7 +13,17 @@
       "lieu": "Dans les terres",
       "legende": "Chemins forestiers et vieux chênes, avant de rejoindre la côte.",
       "couverture": "IMG_4080",
-      "selection": ["IMG_4089", "IMG_4091", "IMG_4104"]
+      "selection": [
+        "IMG_4089",
+        "IMG_4091",
+        "IMG_4104"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4089",
+          "texte": "On commence toujours par l'intérieur. La côte se mérite : une journée de chemins creux et de sous-bois avant de sentir le sel."
+        }
+      ]
     },
     "2026-08-16": {
       "court": "16 août",
@@ -23,7 +31,23 @@
       "lieu": "Sentier côtier & marée basse",
       "legende": "Descente vers l'estran découvert, puis retour au mouillage à la tombée du jour.",
       "couverture": "IMG_4142",
-      "selection": ["IMG_4141", "IMG_4150", "IMG_4157", "IMG_4167", "IMG_4211"]
+      "selection": [
+        "IMG_4141",
+        "IMG_4150",
+        "IMG_4157",
+        "IMG_4167",
+        "IMG_4211"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4142",
+          "texte": "Ici, le paysage change deux fois par jour. La mer se retire d'un kilomètre, découvre un autre monde, puis revient tout recouvrir."
+        },
+        {
+          "apres": "IMG_4178",
+          "texte": "Le soir, tout se calme d'un coup. Les bateaux s'alignent dans le même sens, au gré du courant."
+        }
+      ]
     },
     "2026-08-17": {
       "court": "17 août",
@@ -31,7 +55,23 @@
       "lieu": "Ploumanac'h",
       "legende": "Le phare de Men Ruz et le chaos de granit rose, noyés dans la brume de mer.",
       "couverture": "IMG_4261",
-      "selection": ["IMG_4225", "IMG_4267", "IMG_4287", "IMG_4294", "IMG_4297"]
+      "selection": [
+        "IMG_4225",
+        "IMG_4267",
+        "IMG_4287",
+        "IMG_4294",
+        "IMG_4297"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4261",
+          "texte": "Le granit rose n'est pas une image de carte postale : c'est une roche vieille de trois cents millions d'années, que la mer et le vent découpent bloc par bloc."
+        },
+        {
+          "apres": "IMG_4289",
+          "texte": "La brume ne se lèvera pas de la journée. Elle efface l'horizon, et le phare devient le seul repère."
+        }
+      ]
     },
     "2026-08-18": {
       "court": "18 août",
@@ -39,7 +79,23 @@
       "lieu": "Plougrescant",
       "legende": "Le Gouffre, les failles de la pointe du Château et la maison calée entre les rochers.",
       "couverture": "IMG_4384",
-      "selection": ["IMG_4361", "IMG_4401", "IMG_4405", "IMG_4424", "IMG_4460"]
+      "selection": [
+        "IMG_4361",
+        "IMG_4401",
+        "IMG_4405",
+        "IMG_4424",
+        "IMG_4460"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4374",
+          "texte": "Plougrescant, c'est une côte qui s'effondre en morceaux : failles, gouffres, blocs posés à la verticale."
+        },
+        {
+          "apres": "IMG_4402",
+          "texte": "Le Gouffre porte bien son nom. La houle s'engouffre entre deux parois et ressort en colonne d'écume, toutes les douze secondes."
+        }
+      ]
     },
     "2026-08-19": {
       "court": "19 août",
@@ -47,7 +103,19 @@
       "lieu": "Port & plage",
       "legende": "Grand soleil : les pontons, l'eau turquoise, et un menhir en fin d'après-midi.",
       "couverture": "IMG_4470",
-      "selection": ["IMG_4462", "IMG_4466", "IMG_4473", "IMG_4485", "IMG_4494"]
+      "selection": [
+        "IMG_4462",
+        "IMG_4466",
+        "IMG_4473",
+        "IMG_4485",
+        "IMG_4494"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4466",
+          "texte": "Journée sans marche. Le soleil est enfin franc, l'eau est claire, et personne n'a envie de repartir de la plage."
+        }
+      ]
     },
     "2026-08-20": {
       "court": "20 août",
@@ -55,7 +123,76 @@
       "lieu": "Île de Bréhat",
       "legende": "Une journée entière sur l'île : agapanthes, moulin à marée du Birlot et criques turquoise.",
       "couverture": "IMG_4639",
-      "selection": ["IMG_4549", "IMG_4579", "IMG_4594", "IMG_4694", "IMG_4709"]
+      "selection": [
+        "IMG_4549",
+        "IMG_4579",
+        "IMG_4594",
+        "IMG_4694",
+        "IMG_4709"
+      ],
+      "recit": [
+        {
+          "apres": "IMG_4551",
+          "texte": "Bréhat se traverse à pied en une heure. Aucune voiture, des hortensias et des agapanthes partout, et le Gulf Stream qui fait le reste."
+        },
+        {
+          "apres": "IMG_4594",
+          "texte": "Le nord de l'île est une autre planète : plus de haies, plus d'arbres, seulement du granit rose et le large."
+        },
+        {
+          "apres": "IMG_4666",
+          "texte": "Dernier bateau, dernière lumière. Une semaine tient dans quatre-vingt-dix images."
+        }
+      ]
     }
+  },
+  "legendes": {
+    "IMG_4080": "Le chemin s'enfonce sous les hêtres. On n'entend plus la route.",
+    "IMG_4089": "Un chêne qui a vu passer quelques tempêtes.",
+    "IMG_4091": "Le chien ouvre la marche, comme d'habitude.",
+    "IMG_4104": "La forêt s'arrête net sur un champ de blé.",
+    "IMG_4141": "Le sentier plonge dans les fougères avant de redescendre.",
+    "IMG_4142": "Et d'un coup, entre deux branches, la mer.",
+    "IMG_4150": "Marée basse. On marche là où il y avait deux mètres d'eau ce matin.",
+    "IMG_4153": "Les pins tiennent bon sur le sable.",
+    "IMG_4157": "L'estran découvert jusqu'à l'île. Il faut connaître l'heure pour revenir.",
+    "IMG_4167": "Le sable garde le dessin des vagues parties avec la marée.",
+    "IMG_4211": "Vingt heures. Les coques se posent doucement sur leur mouillage.",
+    "IMG_4225": "Une voile rouge sort de la brume, puis disparaît.",
+    "IMG_4260": "Le phare de Men Ruz, taillé dans le même granit que ses rochers.",
+    "IMG_4261": "Le chaos s'étire jusqu'à la pointe. On ne voit pas où il s'arrête.",
+    "IMG_4267": "Rose sur gris : toute la Côte de Granit Rose tient dans cette image.",
+    "IMG_4287": "En bas, l'eau passe au turquoise dès que la brume s'ouvre.",
+    "IMG_4294": "Se glisser sous un bloc de plusieurs centaines de tonnes.",
+    "IMG_4295": "Le vent et le sel travaillent la pierre depuis trois cents millions d'années.",
+    "IMG_4297": "Sur le chemin du retour, un moulin planté dans les ajoncs.",
+    "IMG_4355": "Le lierre a pris le rocher. La mer attend au bout du passage.",
+    "IMG_4361": "Un rocher posé là, seul, comme oublié.",
+    "IMG_4374": "Un chemin creux, deux haies, une lumière au bout.",
+    "IMG_4384": "Castel Meur, calée entre deux blocs depuis 1861. Elle n'a pas bougé.",
+    "IMG_4388": "À marée basse, le chenal dessine ses courbes dans les herbus.",
+    "IMG_4401": "Le Gouffre. La houle entre et ressort en gerbe.",
+    "IMG_4405": "La faille : deux parois, et la mer tout au fond.",
+    "IMG_4414": "Le granit se fend droit, comme coupé à la scie.",
+    "IMG_4424": "Une plage pour soi, un mardi de fin d'août.",
+    "IMG_4460": "La flèche de la chapelle dépasse de la lande, visible de partout.",
+    "IMG_4462": "Comité d'accueil au bord de l'étang.",
+    "IMG_4466": "Des mâts à perte de vue. Le vent siffle dans les haubans.",
+    "IMG_4470": "Enfin le grand soleil, et l'eau à la bonne température.",
+    "IMG_4485": "Le sommet du rocher, conquis de haute lutte.",
+    "IMG_4494": "Un menhir dressé là il y a cinq mille ans, à l'ombre des chênes.",
+    "IMG_4518": "Une croix de granit veille sur les îlots depuis des siècles.",
+    "IMG_4544": "La chapelle Saint-Michel, posée sur sa butte.",
+    "IMG_4549": "L'agapanthe pousse ici comme ailleurs le pissenlit.",
+    "IMG_4551": "Pas de voiture sur l'île. Seulement des chemins blancs entre les haies.",
+    "IMG_4565": "Au nord, la houle vient buter franchement sur le rose.",
+    "IMG_4579": "Le petit phare tient tout seul sur son chaos.",
+    "IMG_4585": "Le goéland nous regarde passer sans bouger d'un pouce.",
+    "IMG_4594": "Le bleu profond du large contre le rose des blocs.",
+    "IMG_4639": "Le moulin à marée du Birlot : il tournait avec la mer qui se retire.",
+    "IMG_4666": "La marée s'en va et pose les bateaux sur le sable.",
+    "IMG_4694": "Un vieux gréement rentre au mouillage, pavillon au vent.",
+    "IMG_4699": "Un pin couché par les vents dominants, arrêté juste au bon endroit.",
+    "IMG_4709": "Vingt et une heures. Dernier jour, dernière lumière."
   }
 }

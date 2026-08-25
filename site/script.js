@@ -35,7 +35,7 @@
      1. Apparitions au défilement
      ======================================================================= */
 
-  var aReveler = $$(".cadre, .reveler, .som__item, .entree, .bloc__rail");
+  var aReveler = $$(".cadre, .pano, .immersif, .reveler, .som__item, .entree, .bloc__rail");
 
   /* Le chargement paresseux natif démarre trop tard : le volet de révélation
      se levait sur un cadre encore vide. On bascule les photos en chargement
@@ -66,7 +66,7 @@
 
         /* On n'anime qu'une fois la photo décodée. Sinon le volet se lève sur
            un aplat de couleur et l'animation passe pour rien. */
-        var img = el.classList.contains("cadre") ? $("img", el) : null;
+        var img = el.matches(".cadre, .pano, .immersif") ? $("img", el) : null;
         if (img && !img.complete) {
           var fait = false;
           var lancer = function () { if (!fait) { fait = true; reveler(el, retard); } };
@@ -107,6 +107,26 @@
       }, { rootMargin: "150px 0px" });
       parallaxe.forEach(function (p) { veille.observe(p.cadre); });
     }
+  }
+
+  /* Panoramas : la photo, plus large que l'écran, dérive latéralement pendant
+     que le bloc traverse la fenêtre. On parcourt l'image en défilant. */
+  var panos = $$("[data-pano]").map(function (b) {
+    return { bloc: b, piste: $(".pano__piste", b) };
+  }).filter(function (x) { return x.piste; });
+
+  function majPanos() {
+    if (!doux) return;
+    var vh = window.innerHeight;
+    panos.forEach(function (x) {
+      var b = x.bloc.getBoundingClientRect();
+      if (b.bottom < -200 || b.top > vh + 200) return;
+      var course = x.piste.offsetWidth - x.bloc.clientWidth;
+      if (course <= 0) return;
+      var avance = (vh - b.top) / (vh + b.height);
+      avance = avance < 0 ? 0 : avance > 1 ? 1 : avance;
+      x.piste.style.setProperty("--dx", (-course * avance).toFixed(1) + "px");
+    });
   }
 
   function majParallaxe() {
@@ -157,6 +177,7 @@
     }
 
     majParallaxe();
+    majPanos();
     enAttente = false;
   }
 

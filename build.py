@@ -30,6 +30,9 @@ PORTRAIT = 0.95    # en deçà : format vertical
 SANS_ORIG = "--sans-originaux" in sys.argv
 
 
+LEGENDES = {}          # id de photo -> légende, rempli depuis jours.json
+
+
 def e(t): return html.escape(str(t), quote=True)
 def log(*a): print(*a, flush=True)
 def r(p): return p["l"] / p["h"]
@@ -64,16 +67,22 @@ def telechargement(p):
 
 
 def cadre(p, tailles, classe="", legende=None, prioritaire=False):
-    """Un cadre cliquable au format exact de la photo : aucun recadrage."""
-    leg = f'<figcaption class="cadre__leg">{e(legende)}</figcaption>' if legende else ""
+    """Un cadre cliquable au format exact de la photo : aucun recadrage.
+
+    La vue (boîte au format de l'image, débordement masqué) est séparée de la
+    légende, qui se pose sous la photo et ne doit donc pas être rognée.
+    """
+    leg = (f'<figcaption class="cadre__leg">{e(legende)}</figcaption>' if legende else "")
     dl, nom = telechargement(p)
     return (
-        f'<figure class="cadre {classe}" style="--r:{round(r(p), 4)};background-color:{p["c"]}">'
+        f'<figure class="cadre {classe}" style="--r:{round(r(p), 4)}">'
+        f'<span class="cadre__vue" style="background-color:{p["c"]}">'
         f'<button class="cadre__zone" type="button" data-id="{p["id"]}" data-heure="{p["heure"]}"'
         f' data-dl="{dl}" data-dlnom="{nom}" aria-label="Agrandir la photo de {p["heure"]}">'
         + image(p, tailles, prioritaire) +
+        f'</button></span>'
         f'<span class="cadre__heure">{p["heure"]}</span>'
-        f'</button>{leg}</figure>'
+        f'{leg}</figure>'
     )
 
 
@@ -83,87 +92,211 @@ def cadre(p, tailles, classe="", legende=None, prioritaire=False):
 
 T_PLEINE   = "(max-width:820px) 92vw, min(1560px, 88vw)"
 T_BLEED    = "100vw"
+T_PANO     = "150vw"
 T_DUO      = "(max-width:820px) 92vw, min(760px, 43vw)"
 T_GRANDE   = "(max-width:820px) 92vw, min(900px, 51vw)"
 T_PETITE   = "(max-width:820px) 68vw, min(590px, 33vw)"
 T_RAIL     = "(max-width:820px) 92vw, min(1000px, 57vw)"
 T_PORTRAIT = "(max-width:820px) 46vw, min(520px, 29vw)"
+T_TRIPT    = "(max-width:820px) 46vw, min(520px, 30vw)"
+T_TEXTE    = "(max-width:820px) 92vw, min(860px, 48vw)"
 
-CYCLE_ACCUEIL = ["pleine", "duo", "rail", "decale", "pleine", "duo", "rail", "pleine"]
-CYCLE_JOUR    = ["pleine", "rail", "pleine", "duo", "pleine", "decale", "pleine", "rail"]
+# Chaque bloc porte une animation d'apparition différente, pour que le
+# défilement ne se réduise pas à la répétition d'un même volet.
+REVEAL = {
+    "pleine":    "rev--voile",
+    "immersif":  "rev--fondu",
+    "duo":       "rev--cote",
+    "decale":    "rev--voile",
+    "rail":      "rev--cote",
+    "triptyque": "rev--zoom",
+    "texte":     "rev--voile",
+    "portraits": "rev--zoom",
+    "pano":      "rev--fondu",
+}
 
 
-def bloc_bleed(p):
-    return (f'<div class="bloc bloc--bleed">' + cadre(p, T_BLEED) + '</div>')
+def bloc_pano(p, legende=None):
+    """Panoramique : la photo, plus large que l'écran, dérive au défilement."""
+    leg = (f'<figcaption class="pano__leg">{e(legende)}</figcaption>' if legende else "")
+    dl, nom = telechargement(p)
+    return (
+        f'<div class="bloc bloc--pano" data-pano style="--r:{round(r(p), 4)}">'
+        f'<figure class="pano" style="background-color:{p["c"]}">'
+        f'<button class="pano__zone" type="button" data-id="{p["id"]}" data-heure="{p["heure"]}"'
+        f' data-dl="{dl}" data-dlnom="{nom}" aria-label="Agrandir le panorama de {p["heure"]}">'
+        f'<span class="pano__piste">' + image(p, T_PANO) + '</span>'
+        f'</button>'
+        f'<span class="pano__marque"><span class="pano__fleche"></span>panorama</span>'
+        f'{leg}</figure></div>'
+    )
 
 
-def bloc_pleine(p):
-    return (f'<div class="bloc bloc--pleine">' + cadre(p, T_PLEINE) + '</div>')
+def bloc_immersif(p, legende=None):
+    """Photo pleine fenêtre, plus haute, avec sa légende posée dessus."""
+    leg = (f'<figcaption class="immersif__leg"><span>{e(legende)}</span></figcaption>'
+           if legende else "")
+    dl, nom = telechargement(p)
+    return (
+        f'<div class="bloc bloc--immersif">'
+        f'<figure class="immersif" style="background-color:{p["c"]}">'
+        f'<button class="immersif__zone" type="button" data-id="{p["id"]}" data-heure="{p["heure"]}"'
+        f' data-dl="{dl}" data-dlnom="{nom}" aria-label="Agrandir la photo de {p["heure"]}">'
+        f'<span class="immersif__media">' + image(p, T_BLEED) + '</span>'
+        f'<span class="immersif__ombre"></span>'
+        f'</button>{leg}</figure></div>'
+    )
 
 
-def bloc_duo(a, b):
-    somme = round(r(a) + r(b), 4)
-    return (f'<div class="bloc bloc--duo" style="--somme:{somme}">'
-            f'<div class="bloc__part" style="--poids:{round(r(a),4)}">' + cadre(a, T_DUO) + '</div>'
-            f'<div class="bloc__part" style="--poids:{round(r(b),4)}">' + cadre(b, T_DUO) + '</div>'
+def bloc_exergue(texte, heure=None):
+    """Interlude de récit : une phrase seule, respiration dans le flux."""
+    h = f'<span class="exergue__heure">{e(heure)}</span>' if heure else ""
+    return (f'<div class="bloc bloc--exergue reveler">'
+            f'<p class="exergue">{h}<span class="exergue__texte">{e(texte)}</span></p>'
             f'</div>')
 
 
-def bloc_decale(a, b, a_gauche):
+def bloc_texte(p, legende, a_gauche):
+    """Une photo et sa légende côte à côte, en vis-à-vis."""
+    cote = "gauche" if a_gauche else "droite"
+    return (f'<div class="bloc bloc--texte bloc--{cote}">'
+            f'<div class="bloc__photo">' + cadre(p, T_TEXTE) + '</div>'
+            f'<div class="bloc__mot"><span class="mot__heure">{p["heure"]}</span>'
+            f'<p class="mot__texte">{e(legende)}</p></div>'
+            f'</div>')
+
+
+def bloc_triptyque(trois):
+    parts = "".join(
+        f'<div class="bloc__part" style="--poids:{round(r(x), 4)}">' + cadre(x, T_TRIPT) + '</div>'
+        for x in trois)
+    somme = round(sum(r(x) for x in trois), 4)
+    return f'<div class="bloc bloc--triptyque" style="--somme:{somme}">{parts}</div>'
+
+
+def bloc_bleed(p):
+    return '<div class="bloc bloc--bleed">' + cadre(p, T_BLEED) + '</div>'
+
+
+def bloc_pleine(p, legende=None):
+    return ('<div class="bloc bloc--pleine">' + cadre(p, T_PLEINE, legende=legende) + '</div>')
+
+
+def bloc_duo(a, b, legendes):
+    somme = round(r(a) + r(b), 4)
+    return (f'<div class="bloc bloc--duo" style="--somme:{somme}">'
+            f'<div class="bloc__part" style="--poids:{round(r(a),4)}">'
+            + cadre(a, T_DUO, legende=legendes.get(a["id"])) + '</div>'
+            f'<div class="bloc__part" style="--poids:{round(r(b),4)}">'
+            + cadre(b, T_DUO, legende=legendes.get(b["id"])) + '</div>'
+            f'</div>')
+
+
+def bloc_decale(a, b, a_gauche, legendes):
     grande, petite = (a, b) if r(a) >= r(b) else (b, a)
     cote = "gauche" if a_gauche else "droite"
     return (f'<div class="bloc bloc--decale bloc--{cote}">'
-            f'<div class="bloc__grande">' + cadre(grande, T_GRANDE) + '</div>'
+            f'<div class="bloc__grande">'
+            + cadre(grande, T_GRANDE, legende=legendes.get(grande["id"])) + '</div>'
             f'<div class="bloc__petite">' + cadre(petite, T_PETITE) + '</div>'
             f'</div>')
 
 
-def bloc_rail(p, jour, n, a_gauche):
+def bloc_rail(p, jour, n, a_gauche, legende=None):
     cote = "gauche" if a_gauche else "droite"
+    mot = f'<span class="rail__mot">{e(legende)}</span>' if legende else ""
     rail = (f'<div class="bloc__rail">'
             f'<span class="rail__n">{n:02d}</span>'
             f'<span class="rail__trait"></span>'
             f'<span class="rail__heure">{p["heure"]}</span>'
             f'<span class="rail__lieu">{e(jour["lieu"])}</span>'
-            f'</div>')
+            f'{mot}</div>')
     return (f'<div class="bloc bloc--rail bloc--{cote}">'
             f'<div class="bloc__photo">' + cadre(p, T_RAIL) + '</div>' + rail + '</div>')
 
 
-def bloc_portraits(a, b):
-    return (f'<div class="bloc bloc--portraits">'
-            + cadre(a, T_PORTRAIT) + cadre(b, T_PORTRAIT) + '</div>')
+def bloc_portraits(a, b, legendes):
+    return ('<div class="bloc bloc--portraits">'
+            + cadre(a, T_PORTRAIT, legende=legendes.get(a["id"]))
+            + cadre(b, T_PORTRAIT, legende=legendes.get(b["id"])) + '</div>')
 
 
-def composer(photos, jour, cycle):
-    """Parcourt les photos dans l'ordre et alterne les rythmes de mise en page."""
-    out, i, k = [], 0, 0
+# Rythmes : aucun motif ne revient deux fois de suite, et « pleine » n'est
+# plus le motif par défaut — il alterne avec « immersif », « rail », « texte ».
+CYCLE_ACCUEIL = ["immersif", "duo", "rail", "triptyque", "decale",
+                 "texte", "duo", "pleine", "rail", "triptyque"]
+CYCLE_JOUR    = ["immersif", "rail", "duo", "texte", "triptyque",
+                 "pleine", "decale", "rail", "duo", "immersif", "triptyque", "texte"]
+
+SOLO = ["immersif", "pleine", "rail", "texte"]      # replis quand il ne reste qu'une photo
+
+
+def composer(photos, jour, cycle, legendes=None, recit=None):
+    """Parcourt les photos dans l'ordre et alterne les rythmes de mise en page.
+
+    Les interludes de récit sont insérés après la photo qu'ils désignent.
+    """
+    legendes = legendes or {}
+    apres = {x["apres"]: x for x in (recit or []) if x.get("apres")}
+    out, i, k, solo, cote = [], 0, 0, 0, 0
+    precedent = None
     n = len(photos)
+
+    def poser(html, utilisees, motif):
+        out.append(html.replace('class="bloc ', f'class="bloc {REVEAL.get(motif, "")} ', 1))
+        for x in utilisees:
+            if x["id"] in apres:
+                out.append(bloc_exergue(apres[x["id"]]["texte"], x["heure"]))
 
     while i < n:
         p = photos[i]
+        leg = legendes.get(p["id"])
 
-        if r(p) >= PANO:                                   # panoramique : pleine fenêtre
-            out.append(bloc_bleed(p)); i += 1; continue
+        if r(p) >= PANO:                                   # panoramique : traitement à part
+            poser(bloc_pano(p, leg), [p], "pano"); i += 1; precedent = "pano"; continue
 
-        suiv = photos[i + 1] if i + 1 < n else None
-        duo_possible = suiv is not None and r(suiv) < PANO
+        suiv  = photos[i + 1] if i + 1 < n else None
+        suiv2 = photos[i + 2] if i + 2 < n else None
+        paire = suiv is not None and r(suiv) < PANO
+        trio  = paire and suiv2 is not None and r(suiv2) < PANO
 
         if r(p) < PORTRAIT and suiv is not None and r(suiv) < PORTRAIT:
-            out.append(bloc_portraits(p, suiv)); i += 2; k += 1; continue
+            poser(bloc_portraits(p, suiv, legendes), [p, suiv], "portraits"); i += 2; k += 1; precedent = "portraits"; continue
 
         motif = cycle[k % len(cycle)]
-        if motif in ("duo", "decale") and not duo_possible:
-            motif = "pleine"
+        if motif == "triptyque" and not trio:
+            motif = "duo" if paire else None
+        if motif in ("duo", "decale") and not paire:
+            motif = None
+        if motif == "texte" and not leg:
+            motif = None
+        if motif is None:                                  # repli : on tourne, jamais deux fois pareil
+            motif = SOLO[solo % len(SOLO)]
+            if motif == "texte" and not leg:
+                motif = "immersif" if solo % 2 else "pleine"
+            solo += 1
+
+        if motif == precedent:              # jamais deux blocs identiques de suite
+            secours = [m for m in SOLO if m != precedent and (m != "texte" or leg)]
+            if secours:
+                motif = secours[solo % len(secours)]
+                solo += 1
 
         if motif == "duo":
-            out.append(bloc_duo(p, suiv)); i += 2
+            poser(bloc_duo(p, suiv, legendes), [p, suiv], motif); i += 2
+        elif motif == "triptyque":
+            poser(bloc_triptyque([p, suiv, suiv2]), [p, suiv, suiv2], motif); i += 3
         elif motif == "decale":
-            out.append(bloc_decale(p, suiv, a_gauche=(k % 4 < 2))); i += 2
+            poser(bloc_decale(p, suiv, cote % 2 == 0, legendes), [p, suiv], motif); i += 2; cote += 1
         elif motif == "rail":
-            out.append(bloc_rail(p, jour, i + 1, a_gauche=(k % 4 < 2))); i += 1
+            poser(bloc_rail(p, jour, i + 1, cote % 2 == 0, leg), [p], motif); i += 1; cote += 1
+        elif motif == "texte":
+            poser(bloc_texte(p, leg, cote % 2 == 0), [p], motif); i += 1; cote += 1
+        elif motif == "immersif":
+            poser(bloc_immersif(p, leg), [p], motif); i += 1
         else:
-            out.append(bloc_pleine(p)); i += 1
+            poser(bloc_pleine(p, leg), [p], motif); i += 1
+        precedent = motif
         k += 1
 
     return "".join(out)
@@ -331,7 +464,7 @@ def page_accueil(album, jours):
     <aside class="jour__rail" aria-hidden="true">
       <div class="jour__rail-int">Jour {j['n']:02d} <span class="pastille"></span> {e(j['lieu'])}</div>
     </aside>
-    <div class="jour__flux">{composer(j['photos'], j, CYCLE_ACCUEIL)}</div>
+    <div class="jour__flux">{composer(j['photos'], j, CYCLE_ACCUEIL, LEGENDES, j['recit'])}</div>
   </div>
   <div class="jour__fin">{ouvrir_jour(j, 'Revoir cette journée seule')}</div>
 </section>""" for i, j in enumerate(jours))
@@ -405,7 +538,7 @@ def page_jour(album, jours, j):
 </section>
 
 <main class="journee">
-  <div class="jour__flux">{composer(j['photos'], j, CYCLE_JOUR)}</div>
+  <div class="jour__flux">{composer(j['photos'], j, CYCLE_JOUR, LEGENDES, j['recit'])}</div>
 </main>
 
 <nav class="voisins" aria-label="Autres journées">{voisin(prec, 'prec')}{voisin(suiv, 'suiv')}</nav>
@@ -427,6 +560,9 @@ def main():
     textes = json.loads(JOURS.read_text(encoding="utf-8")) if JOURS.exists() else {}
     meta, album = textes.get("jours", {}), textes.get("album", {})
 
+    global LEGENDES
+    LEGENDES = textes.get("legendes", {})
+
     par_date = {}
     for p in photos:
         par_date.setdefault(p["jour"], []).append(p)
@@ -444,6 +580,7 @@ def main():
             court=t.get("court") or f"{d.day} {MOIS[d.month-1]}",
             lieu=t.get("lieu") or libelle.capitalize(),
             legende=t.get("legende", ""),
+            recit=t.get("recit", []),
             couverture=idx[couv], photos=liste,
         ))
 

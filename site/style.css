@@ -376,7 +376,7 @@ picture{ display: block; }
 .jour__flux{
   min-width: 0;
   display: flex; flex-direction: column;
-  gap: clamp(2.6rem, 7vw, 8rem);
+  gap: clamp(2.2rem, 4.6vw, 5.5rem);
 }
 
 .jour__fin{
@@ -390,10 +390,13 @@ picture{ display: block; }
    ========================================================================= */
 
 .cadre{
-  position: relative; margin: 0; overflow: hidden;
-  aspect-ratio: var(--r, 1.5);
+  position: relative; margin: 0; min-width: 0;
   width: min(100%, calc(84svh * var(--r)));
   margin-inline: auto;
+}
+.cadre__vue{
+  position: relative; display: block; overflow: hidden;
+  aspect-ratio: var(--r, 1.5); width: 100%;
 }
 .cadre__zone{
   display: block; width: 100%; height: 100%;
@@ -413,7 +416,7 @@ picture{ display: block; }
 .cadre.vu img{ transform: none; transition: transform 1.5s var(--lent); }
 
 .cadre__heure{
-  position: absolute; left: 0; bottom: -1.7rem;
+  position: absolute; left: 0; bottom: -1.55rem; display: block;
   font-size: .7rem; letter-spacing: .14em; color: var(--ardoise-pale);
   font-variant-numeric: tabular-nums;
   opacity: 0; transform: translateY(-4px);
@@ -438,13 +441,15 @@ picture{ display: block; }
 
 .bloc--duo{ display: flex; gap: var(--g); aspect-ratio: var(--somme, 3); }
 .bloc__part{ min-width: 0; display: flex; flex: var(--poids, 1); }
-.bloc--duo .cadre{ aspect-ratio: auto; width: 100%; height: 100%; }
+.bloc--duo .cadre{ width: 100%; height: 100%; }
+.bloc--duo .cadre__vue{ aspect-ratio: auto; height: 100%; }
 
 /* petits écrans : jamais deux photos côte à côte, elles seraient minuscules */
 @media (max-width: 819px){
   .bloc--duo{ flex-direction: column; aspect-ratio: auto; }
   .bloc__part{ display: block; flex: none; }
-  .bloc--duo .cadre{ aspect-ratio: var(--r); width: 100%; height: auto; }
+  .bloc--duo .cadre{ width: 100%; height: auto; }
+  .bloc--duo .cadre__vue{ aspect-ratio: var(--r); }
   .bloc--duo .bloc__part:last-child{ width: 78%; margin-left: auto; }
 
   .bloc--portraits{ flex-direction: column; align-items: stretch; }
@@ -755,6 +760,251 @@ picture{ display: block; }
    Confort
    ========================================================================= */
 
+
+/* =========================================================================
+   Couche éditoriale : légendes, récit, panorama, immersif, vis-à-vis
+   ========================================================================= */
+
+/* ---- légende posée sous la photo ---- */
+
+.cadre__leg{
+  display: block;
+  margin-top: 1.15rem;
+  max-width: 46ch;
+  font-size: clamp(.86rem, 1.5vw, .95rem);
+  line-height: 1.6;
+  color: var(--encre-doux);
+  text-wrap: pretty;
+  border-left: 2px solid var(--granit-clair);
+  padding-left: .9rem;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .8s var(--lent) .25s, transform .8s var(--lent) .25s;
+}
+.cadre.vu .cadre__leg{ opacity: 1; transform: none; }
+
+.bloc--decale .cadre__leg,
+.bloc--rail .cadre__leg{ margin-left: 0; }
+.bloc--portraits .cadre__leg{ font-size: .84rem; }
+
+/* ---- interlude de récit ---- */
+
+.bloc--exergue{
+  padding-block: clamp(1.2rem, 4vw, 3.5rem);
+  display: flex;
+}
+
+.exergue{
+  position: relative;
+  margin: 0;
+  max-width: 34ch;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(38,50,62,.18);
+}
+
+/* au-delà de la tablette seulement : l'interlude se décale, en alternance */
+@media (min-width: 880px){
+  .exergue{ max-width: 30ch; }
+  .bloc--exergue:nth-of-type(even){ justify-content: flex-end; }
+  .bloc--exergue:nth-of-type(odd) .exergue{ margin-left: clamp(0px, 8vw, 9rem); }
+}
+.exergue__heure{
+  display: block; margin-bottom: .9rem;
+  font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--granit);
+  font-variant-numeric: tabular-nums;
+}
+.exergue__texte{
+  display: block;
+  font-family: var(--serif);
+  font-size: clamp(1.3rem, 2.7vw, 2.05rem);
+  line-height: 1.34;
+  letter-spacing: -.012em;
+  color: var(--encre);
+  text-wrap: pretty;
+}
+
+/* ---- photo et sa légende en vis-à-vis ---- */
+
+.bloc--texte{ display: grid; gap: clamp(1.2rem, 3.5vw, 3.2rem); align-items: center; }
+.bloc--texte .cadre{ margin-inline: 0; width: 100%; }
+
+@media (min-width: 820px){
+  .bloc--texte{ grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
+  .bloc--texte.bloc--droite{ grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); }
+  .bloc--texte.bloc--droite .bloc__photo{ order: 2; }
+}
+
+.bloc__mot{ max-width: 32ch; }
+.mot__heure{
+  display: block; margin-bottom: .8rem;
+  font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
+  color: var(--granit); font-variant-numeric: tabular-nums;
+}
+.mot__texte{
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(1.15rem, 2.2vw, 1.6rem);
+  line-height: 1.42;
+  color: var(--encre);
+  text-wrap: pretty;
+}
+
+/* ---- un mot posé dans la colonne du rail ---- */
+
+.rail__mot{
+  margin-top: .9rem;
+  font-size: .85rem; line-height: 1.55; color: var(--encre-doux);
+  text-wrap: pretty;
+}
+
+/* ---- triptyque ---- */
+
+.bloc--triptyque{ display: flex; gap: var(--g); aspect-ratio: var(--somme, 4.5); }
+.bloc--triptyque .cadre{ width: 100%; height: 100%; margin-inline: 0; }
+.bloc--triptyque .cadre__vue{ aspect-ratio: auto; height: 100%; }
+
+@media (max-width: 819px){
+  .bloc--triptyque{ display: grid; grid-template-columns: 1fr 1fr; aspect-ratio: auto; }
+  .bloc--triptyque .bloc__part{ display: block; flex: none; }
+  .bloc--triptyque .bloc__part:first-child{ grid-column: 1 / -1; }
+  .bloc--triptyque .cadre__vue{ aspect-ratio: var(--r); }
+}
+
+/* ---- photo immersive, pleine fenêtre ---- */
+
+.bloc--immersif{
+  width: var(--vw); position: relative; left: 50%; transform: translateX(-50%);
+}
+.immersif{
+  position: relative; margin: 0; overflow: hidden;
+  height: clamp(420px, 88svh, 880px);
+}
+.immersif__zone{
+  display: block; width: 100%; height: 100%;
+  padding: 0; border: 0; margin: 0; background: none;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.immersif__media{ position: absolute; inset: 0; }
+.immersif__media picture, .immersif__media img{ width: 100%; height: 100%; }
+.immersif__media img{ object-fit: cover; }
+
+/* lent rapprochement pendant la traversée de l'écran */
+.js .immersif__media img{ transform: scale(1.12); }
+.immersif.vu .immersif__media img{
+  transform: scale(1);
+  transition: transform 2.6s var(--lent);
+}
+
+.immersif__ombre{
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top,
+    rgba(12,18,25,.74) 0%, rgba(12,18,25,.28) 26%, rgba(12,18,25,0) 58%);
+}
+.immersif__leg{
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 0 var(--ec) clamp(1.6rem, 4vw, 3.2rem);
+  pointer-events: none;
+}
+.immersif__leg span{
+  display: block; max-width: 34ch;
+  font-family: var(--serif);
+  font-size: clamp(1.2rem, 2.6vw, 1.95rem);
+  line-height: 1.36;
+  color: #fff;
+  text-shadow: 0 2px 26px rgba(8,14,20,.6);
+  text-wrap: pretty;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 1s var(--lent) .35s, transform 1s var(--lent) .35s;
+}
+.immersif.vu .immersif__leg span{ opacity: 1; transform: none; }
+
+/* ---- panorama : la photo dérive latéralement au défilement ---- */
+
+.bloc--pano{
+  --ph: clamp(300px, 62svh, 620px);
+  width: var(--vw); position: relative; left: 50%; transform: translateX(-50%);
+}
+.pano{
+  position: relative; margin: 0; overflow: hidden;
+  height: var(--ph);
+}
+.pano__zone{
+  display: block; width: 100%; height: 100%;
+  padding: 0; border: 0; margin: 0; background: none;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.pano__piste{
+  display: block; height: 100%;
+  width: max(100%, calc(var(--r) * var(--ph)));
+  transform: translate3d(var(--dx, 0px), 0, 0);
+  will-change: transform;
+}
+.pano__piste picture, .pano__piste img{ width: 100%; height: 100%; }
+.pano__piste img{ object-fit: cover; }
+
+.pano__marque{
+  position: absolute; left: var(--ec); top: 1.1rem;
+  display: inline-flex; align-items: center; gap: .5rem;
+  padding: .4em .85em;
+  font-size: .64rem; letter-spacing: .24em; text-transform: uppercase;
+  color: rgba(255,255,255,.9);
+  background: rgba(14,20,27,.34);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-radius: 100px;
+  pointer-events: none;
+}
+.pano__fleche{
+  width: 22px; height: 1px; background: currentColor; position: relative;
+  animation: derive 2.6s ease-in-out infinite;
+}
+.pano__fleche::after{
+  content: ""; position: absolute; right: 0; top: -2.5px;
+  width: 6px; height: 6px;
+  border-top: 1px solid currentColor; border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+@keyframes derive{ 0%,100%{ opacity: .5; transform: translateX(0); } 50%{ opacity: 1; transform: translateX(4px); } }
+
+.pano__leg{
+  position: absolute; left: var(--ec); right: var(--ec); bottom: 1.1rem;
+  max-width: 40ch;
+  font-size: .88rem; line-height: 1.5; color: rgba(255,255,255,.94);
+  text-shadow: 0 1px 16px rgba(8,14,20,.75);
+  pointer-events: none;
+}
+
+/* =========================================================================
+   Quatre façons d'apparaître, pour que le défilement ne se répète pas
+   ========================================================================= */
+
+/* voile — le réglage par défaut, du bas vers le haut */
+
+/* de côté */
+.js .rev--cote .cadre picture{ clip-path: inset(0 100% 0 0); }
+.rev--cote .cadre.vu picture{ clip-path: inset(0 0 0 0); transition: clip-path 1.25s var(--lent); }
+.js .rev--cote .bloc__part:nth-child(even) .cadre picture{ clip-path: inset(0 0 0 100%); }
+
+/* rapprochement */
+.js .rev--zoom .cadre picture{ clip-path: none; opacity: 0; transform: scale(1.04); }
+.rev--zoom .cadre.vu picture{
+  opacity: 1; transform: none;
+  transition: opacity 1.1s var(--lent), transform 1.4s var(--lent);
+}
+.js .rev--zoom .cadre img{ transform: none; }
+
+/* fondu simple — pour les pleines fenêtres, où un volet serait trop appuyé */
+.js .rev--fondu .cadre picture,
+.js .pano__piste, .js .immersif__media{ clip-path: none; }
+.js .pano, .js .immersif{ opacity: 0; }
+.pano.vu, .immersif.vu{ opacity: 1; transition: opacity 1.2s var(--lent); }
+
+/* =========================================================================
+   Rythme vertical : l'écart change selon les blocs qui se suivent
+   ========================================================================= */
+
+.bloc--immersif, .bloc--pano, .bloc--bleed{ margin-block: clamp(.5rem, 2vw, 2.5rem); }
+.bloc--exergue + .bloc{ margin-top: clamp(-1rem, -2vw, -2.5rem); }
+
 @media (prefers-reduced-motion: reduce){
   @view-transition{ navigation: none; }
   html{ scroll-behavior: auto; }
@@ -764,7 +1014,11 @@ picture{ display: block; }
   }
   .js .reveler{ opacity: 1; transform: none; }
   .js .monte{ transform: none; }
-  .js .cadre picture{ clip-path: none; }
+  .js .cadre picture{ clip-path: none; opacity: 1; transform: none; }
+  .js .pano, .js .immersif{ opacity: 1; }
+  .js .immersif__media img{ transform: none; }
+  .pano__piste{ transform: none !important; }
+  .cadre__leg, .immersif__leg span{ opacity: 1 !important; transform: none !important; }
   .js .cadre img{ transform: none; }
   .hero__media img, .entree__media img, .entete__media img{ transform: none !important; }
   .curseur{ display: none; }
