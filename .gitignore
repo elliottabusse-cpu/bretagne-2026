@@ -1,0 +1,7 @@
+# Les fichiers d'origine restent en local : 420 Mo déjà publiés dans site/photos/original
+originaux/
+
+# macOS / Python
+.DS_Store
+__pycache__/
+*.pyc

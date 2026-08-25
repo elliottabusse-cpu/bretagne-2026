@@ -1,0 +1,16 @@
+# Déploiement Netlify — le site est entièrement statique, aucun build à lancer.
+[build]
+  publish = "site"
+
+# Les images ne changent jamais de nom : on les met en cache très longtemps.
+[[headers]]
+  for = "/photos/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"

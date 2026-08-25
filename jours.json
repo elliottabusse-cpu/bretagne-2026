@@ -1,0 +1,61 @@
+{
+  "_lisezmoi": "Tous les textes, couvertures et sélections du site se règlent ICI. Ensuite : python3 build.py --pages",
+
+  "album": {
+    "titre": "Une semaine en Bretagne",
+    "sousTitre": "Côte de Granit Rose · août 2026",
+    "intro": "Six journées de marche, de marées et de granit rose, du 14 au 20 août. Quatre-vingt-dix photos, dans l'ordre où elles ont été prises.",
+    "couverture": "IMG_4594"
+  },
+
+  "jours": {
+    "2026-08-14": {
+      "court": "14 août",
+      "libelle": "Vendredi 14 août",
+      "lieu": "Dans les terres",
+      "legende": "Chemins forestiers et vieux chênes, avant de rejoindre la côte.",
+      "couverture": "IMG_4080",
+      "selection": ["IMG_4089", "IMG_4091", "IMG_4104"]
+    },
+    "2026-08-16": {
+      "court": "16 août",
+      "libelle": "Dimanche 16 août",
+      "lieu": "Sentier côtier & marée basse",
+      "legende": "Descente vers l'estran découvert, puis retour au mouillage à la tombée du jour.",
+      "couverture": "IMG_4142",
+      "selection": ["IMG_4141", "IMG_4150", "IMG_4157", "IMG_4167", "IMG_4211"]
+    },
+    "2026-08-17": {
+      "court": "17 août",
+      "libelle": "Lundi 17 août",
+      "lieu": "Ploumanac'h",
+      "legende": "Le phare de Men Ruz et le chaos de granit rose, noyés dans la brume de mer.",
+      "couverture": "IMG_4261",
+      "selection": ["IMG_4225", "IMG_4267", "IMG_4287", "IMG_4294", "IMG_4297"]
+    },
+    "2026-08-18": {
+      "court": "18 août",
+      "libelle": "Mardi 18 août",
+      "lieu": "Plougrescant",
+      "legende": "Le Gouffre, les failles de la pointe du Château et la maison calée entre les rochers.",
+      "couverture": "IMG_4384",
+      "selection": ["IMG_4361", "IMG_4401", "IMG_4405", "IMG_4424", "IMG_4460"]
+    },
+    "2026-08-19": {
+      "court": "19 août",
+      "libelle": "Mercredi 19 août",
+      "lieu": "Port & plage",
+      "legende": "Grand soleil : les pontons, l'eau turquoise, et un menhir en fin d'après-midi.",
+      "couverture": "IMG_4470",
+      "selection": ["IMG_4462", "IMG_4466", "IMG_4473", "IMG_4485", "IMG_4494"]
+    },
+    "2026-08-20": {
+      "court": "20 août",
+      "libelle": "Jeudi 20 août",
+      "lieu": "Île de Bréhat",
+      "legende": "Une journée entière sur l'île : agapanthes, moulin à marée du Birlot et criques turquoise.",
+      "couverture": "IMG_4639",
+      "selection": ["IMG_4549", "IMG_4579", "IMG_4594", "IMG_4694", "IMG_4709"]
+    }
+  }
+}
