@@ -249,7 +249,7 @@
   /* sens : -1 précédente, +1 suivante, 0 ouverture */
   function afficher(sens) {
     var z = liste[idx];
-    var id = z.dataset.id, heure = z.dataset.heure, orig = z.dataset.orig;
+    var id = z.dataset.id, heure = z.dataset.heure;
     var mien = ++jeton;
     var cible = palierEcran();
 
@@ -274,8 +274,9 @@
     bPrec.disabled = idx === 0;
     bSuiv.disabled = idx === liste.length - 1;
 
-    if (orig) { vDl.href = "photos/original/" + orig; vDl.hidden = false; vDl.download = orig; }
-    else { vDl.hidden = true; }
+    if (z.dataset.dl) {
+      vDl.href = z.dataset.dl; vDl.download = z.dataset.dlnom || ""; vDl.hidden = false;
+    } else { vDl.hidden = true; }
 
     precharger(idx + 1); precharger(idx - 1);
   }

@@ -25,6 +25,10 @@ SEMAINE = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanch
 PANO    = 2.35     # au-delà : panoramique, il passe à fond perdu
 PORTRAIT = 0.95    # en deçà : format vertical
 
+# --sans-originaux : les fichiers pleine résolution ne sont pas publiés.
+# Le bouton de téléchargement sert alors la version 3200 px.
+SANS_ORIG = "--sans-originaux" in sys.argv
+
 
 def e(t): return html.escape(str(t), quote=True)
 def log(*a): print(*a, flush=True)
@@ -49,13 +53,21 @@ def image(p, tailles, prioritaire=False):
     )
 
 
+def telechargement(p):
+    """Adresse et nom du fichier proposé au téléchargement dans la visionneuse."""
+    if not SANS_ORIG and p.get("orig"):
+        return "photos/original/" + p["orig"], p["orig"]
+    return "photos/w3200/" + p["id"] + ".webp", p["id"] + "-3200px.webp"
+
+
 def cadre(p, tailles, classe="", legende=None, prioritaire=False):
     """Un cadre cliquable au format exact de la photo : aucun recadrage."""
     leg = f'<figcaption class="cadre__leg">{e(legende)}</figcaption>' if legende else ""
+    dl, nom = telechargement(p)
     return (
         f'<figure class="cadre {classe}" style="--r:{round(r(p), 4)};background-color:{p["c"]}">'
         f'<button class="cadre__zone" type="button" data-id="{p["id"]}" data-heure="{p["heure"]}"'
-        f' data-orig="{p.get("orig","")}" aria-label="Agrandir la photo de {p["heure"]}">'
+        f' data-dl="{dl}" data-dlnom="{nom}" aria-label="Agrandir la photo de {p["heure"]}">'
         + image(p, tailles, prioritaire) +
         f'<span class="cadre__heure">{p["heure"]}</span>'
         f'</button>{leg}</figure>'
