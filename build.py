@@ -188,7 +188,7 @@ def tete(titre, description, couv, corps_classe):
 <meta property="og:description" content="{e(description)}">
 <meta property="og:image" content="photos/w1200/{couv}.jpg">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="preload" as="image" href="photos/w2000/{couv}.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="image" href="photos/w1600/{couv}.webp" type="image/webp" fetchpriority="high">
 <link rel="stylesheet" href="style.css">
 </head>
 <body class="{corps_classe}">
