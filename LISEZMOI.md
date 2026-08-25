@@ -40,14 +40,24 @@ n'expose pas les fichiers source.
 |---|---|---|
 | `w600` | 600 px | mobile, vignettes du sommaire |
 | `w1200` | 1200 px | affichage courant (+ JPEG de secours) |
-| `w2000` | 2000 px | grands écrans, écrans retina mobiles |
-| `w3200` | 3200 px | retina desktop, visionneuse |
+| `w2000` | 2000 px | **plafond des pages** |
+| `w3200` | 3200 px | visionneuse uniquement |
 | `original` | natif 5184 px | bouton de téléchargement |
 
 Le navigateur choisit tout seul via `srcset`/`sizes` : il ne télécharge jamais
-plus gros que nécessaire. Dans la visionneuse, la photo s'affiche d'abord en
-1200 px puis se remplace par le palier adapté à l'écran — la mention
-« pleine qualité » apparaît quand c'est fait.
+plus gros que nécessaire.
+
+**Les pages s'arrêtent à 2000 px.** Au-delà le gain visuel est nul — l'image y
+est toujours vue réduite — alors que le poids double. Les trois premiers
+paliers sont compressés en qualité 76 pour la légèreté ; le `w3200`, lui,
+garde la qualité 84 car il est regardé en grand.
+
+Dans la visionneuse, la photo s'affiche d'abord en 1200 px puis se remplace par
+le palier adapté à l'écran, jusqu'à 3200 px — la mention « pleine qualité »
+apparaît quand c'est fait. Le bouton de téléchargement sert l'original.
+
+Régénérer un seul palier : supprimer son dossier et relancer
+`python3 outils_images.py` — les autres ne sont pas retouchés.
 
 ## Déploiement
 

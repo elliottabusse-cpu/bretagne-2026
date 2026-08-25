@@ -24,10 +24,14 @@ PHOTOS = SITE / "photos"
 MANIF  = RACINE / "photos.json"
 
 # largeur maximale du côté long, qualité webp, doublon jpeg de secours
+#
+# Les trois premiers paliers servent les pages : ils sont réglés pour la
+# légèreté, l'image y est toujours vue réduite. Le w3200 ne sert que la
+# visionneuse, où la photo est regardée en grand : il garde sa qualité haute.
 NIVEAUX = [
-    ("w600",   600, 78, False),
-    ("w1200", 1200, 80, True),
-    ("w2000", 2000, 82, False),
+    ("w600",   600, 76, False),
+    ("w1200", 1200, 76, True),
+    ("w2000", 2000, 76, False),
     ("w3200", 3200, 84, False),
 ]
 
@@ -95,9 +99,13 @@ def main():
     fiches = []
     for i, src in enumerate(sources, 1):
         base = src.stem
-        temoin = PHOTOS / "w3200" / f"{base}.webp"
 
-        if temoin.exists() and not FORCE and base in anciens:
+        # on ne refait que les paliers réellement absents : supprimer un dossier
+        # suffit donc à le régénérer seul, sans toucher aux autres
+        a_faire = [n for n in NIVEAUX
+                   if FORCE or not (PHOTOS / n[0] / f"{base}.webp").exists()]
+
+        if not a_faire and base in anciens:
             fiches.append(anciens[base])
             continue
 
@@ -105,12 +113,12 @@ def main():
         L, H = im.size
         c = couleur(im)
 
-        for nom, maxi, q, avec_jpeg in NIVEAUX:
+        for nom, maxi, q, avec_jpeg in a_faire:
             cp = im.copy()
             cp.thumbnail((maxi, maxi), Image.Resampling.LANCZOS)
             cp.save(PHOTOS / nom / f"{base}.webp", "WEBP", quality=q, method=6)
             if avec_jpeg:
-                cp.save(PHOTOS / nom / f"{base}.jpg", "JPEG", quality=q + 2,
+                cp.save(PHOTOS / nom / f"{base}.jpg", "JPEG", quality=q + 4,
                         optimize=True, progressive=True)
 
         # fichier téléchargeable : l'original tel quel, ou sa conversion pleine résolution
